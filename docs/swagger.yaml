@@ -1,0 +1,151 @@
+basePath: /api/
+definitions:
+  domain.User:
+    properties:
+      createdAt:
+        type: string
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  v1.ErrorResponse:
+    properties:
+      failedField:
+        type: string
+      tag:
+        type: string
+      value:
+        type: string
+    type: object
+  v1.SignInInput:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  v1.SignInResponse:
+    properties:
+      data:
+        $ref: '#/definitions/domain.User'
+      token:
+        type: string
+    type: object
+  v1.SignUpInput:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - name
+    - password
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: REST API for my site
+  title: My site API
+  version: "1.0"
+paths:
+  /auth/v1/sign-in:
+    post:
+      consumes:
+      - application/json
+      description: sign in user
+      parameters:
+      - description: sign in info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/v1.SignInInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/v1.SignInResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.SignInInput'
+        "404":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.SignInInput'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/v1.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.ErrorResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.SignInInput'
+      summary: User SignIn
+      tags:
+      - users-auth
+  /auth/v1/sign-up:
+    post:
+      consumes:
+      - application/json
+      description: create user account
+      parameters:
+      - description: sign up info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/v1.SignUpInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: ok
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.SignUpInput'
+        "404":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.SignUpInput'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/v1.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.SignUpInput'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.SignUpInput'
+      summary: User SignUp
+      tags:
+      - users-auth
+securityDefinitions:
+  UsersAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
